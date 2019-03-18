@@ -500,17 +500,17 @@ This API endpoint is used to query order statuses.
 
 ### URL Parameters
     
-    Parameter | Type | Mandatory | Example | Description
-    --------- | --------- | ----------- | ----------- |  ----------- 
-    accountName | STRING |  YES | 1.2.1321  | Your-account-name
-    reverse | BOOL |  NO |  | If it is true, the most recent record will be shown at the beginning
-    assetPair | STRING |  NO | ETH/USDT | Asset pair filter
-    orderStatus | STRING |  NO | FILLED | Use comma as delimiter to include more than one statuses. E.g. FILLED, OPEN
-    startTime | STRING |  NO | 2018-01-07T01:20:48.647910Z | Beginning time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ
-    endTime | STRING |  NO | 2019-01-07T01:20:48.647910Z | End time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ.
-    start | INT |  NO | 0 | Number where result will be shown from
-    limit | INT |  NO | 100 | Max number of results returned
-    transactionId | STRING | NO | 410sdl8ila | Query by transaction id
+Parameter | Type | Mandatory | Example | Description
+--------- | --------- | ----------- | ----------- |  ----------- 
+accountName | STRING |  YES | 1.2.1321  | Your-account-name
+reverse | BOOL |  NO |  | If it is true, the most recent record will be shown at the beginning
+assetPair | STRING |  NO | ETH/USDT | Asset pair filter
+orderStatus | STRING |  NO | FILLED | Use comma as delimiter to include more than one statuses. E.g. FILLED, OPEN
+startTime | STRING |  NO | 2018-01-07T01:20:48.647910Z | Beginning time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ
+endTime | STRING |  NO | 2019-01-07T01:20:48.647910Z | End time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ.
+start | INT |  NO | 0 | Number where result will be shown from
+limit | INT |  NO | 100 | Max number of results returned
+transactionId | STRING | NO | 410sdl8ila | Query by transaction id
     
 ## Query trade
 
@@ -632,9 +632,9 @@ This API endpoint is used to query account current position.
 
 ### URL Parameters
     
-    Parameter | Type | Mandatory | Example | Description
-    --------- | --------- | ----------- | ----------- |  ----------- 
-    accountName | STRING |  YES | 1.2.1321  | Your-account-name
+Parameter | Type | Mandatory | Example | Description
+--------- | --------- | ----------- | ----------- |  ----------- 
+accountName | STRING |  YES | 1.2.1321  | Your-account-name
 
 ## Query order book
 
@@ -703,11 +703,74 @@ This API endpoint is used to query order book of given asset pair.
 
 ### URL Parameters
     
-    Parameter | Type | Mandatory | Example | Description
-    --------- | --------- | ----------- | ----------- |  ----------- 
-    assetPair | STRING |  YES | ETH/USDT  | target asset pair
-    limit | INT | YES | 10 | Number of levels
+Parameter | Type | Mandatory | Example | Description |
+--------- | --------- | ----------- | ----------- |  ------ 
+assetPair | STRING |  YES | ETH/USDT  | target asset pair
+limit | INT | YES | 10 | Number of levels
     
+
+## Query candle stick
+
+```python
+url = "https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
+requests.get(url)
+```
+
+```shell
+curl 'https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
+```
+
+> The above command returns JSON if success:
+
+```json
+[
+  [
+    1546928820000,   // Open time
+    "2.70150000",     // Open price
+    "2.70240000",     // High
+    "2.70150000",     // Low
+    "2.70200000",    // Close
+    "282.91000000",  //Volume
+    1546928879999,  // Close time
+    "764.40811500",  // Quote asset volume
+    3,                             // Number of trades
+    "64.45000000",   // Taker buy base asset volume
+    "174.16968000",  // Taker buy quote asset volume
+    "0"   // Reserved
+  ],
+  [
+    1546928880000,
+    "2.70200000",
+    "2.70200000",
+    "2.70160000",
+    "2.70160000",
+    "163.48000000",
+    1546928939999,
+    "441.70876800",
+    2,
+    "163.48000000",
+    "441.70876800",
+    "0"
+  ]
+]
+```
+
+### HTTP Request
+
+`GET https://api.cybex.io/v1/klines`
+
+### URL Parameters
+
+
+|Parameter|Type|Mandatory|Example value|
+| --- | --- | --- | --- |
+| assetPair | STRING | YES | E.g. ETH/USDT, EOS/USDT |
+interval | ENUM | YES | 1m, 3m, , 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+startTime | LONG | NO | Beginning time of the query, the format must be YYYY-MM-DDTHH:mm:ss.ssssssZ. E.g. 2018-01-07T01:20:48.647910Z
+endTime | LONG | NO | End time of the query, the format must be YYYY-MM-DDTHH:mm:ss.ssssssZ. E.g. 2019-01-07T01:20:48.647910Z
+limit | INT | NO | Level to be shown
+useTradePrice | BOOL | NO | Default is "false", and this api returns market prices. If it is specified as "true" then this api returns our exchange's prices.  
+
    
 # Wrap it up
 
