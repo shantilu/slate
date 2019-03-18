@@ -725,12 +725,12 @@ curl 'https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
 ```
 [
   [
-    1546928820000,      //Open time
-    "2.70150000",       //Open price
-    "2.70240000",       //High
-    "2.70150000",       //Low
+    1546928820000,      // Open time
+    "2.70150000",       // Open price
+    "2.70240000",       // High
+    "2.70150000",       // Low
     "2.70200000",       // Close
-    "282.91000000",     //Volume
+    "282.91000000",     // Volume
     1546928879999,      // Close time
     "764.40811500",     // Quote asset volume
     3,                  // Number of trades
