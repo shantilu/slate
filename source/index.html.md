@@ -18,69 +18,49 @@ search: true
 
 # Introduction
 
-Welcome to the Cybex API! You can use our API to access Cybex exchange. We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Welcome to the Cybex API! With the introduction of ROME(Realtime Order Matching Engine), realtime order matching is made possible, so is related fields like high frequency trading. You can use our API to access Cybex exchange. We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-Cybex is a decentralized exchange on blockchain, so the usage of API is slightly different compared to traditional ones. There is no convectional authentication, but every transactional operation needs to be signed with your private key. To facilitate the signing process, we developed the tool __cyb-signer__. Once the signer is configured right, you can use the API at ease.
+Cybex is a decentralized exchange based on blockchain, so the usage of API is slightly different compared to traditional ones. There is no convectional authentication, but every transactional operation needs to be signed with your private key. To facilitate the signing process, we developed the tool __cyb-signer__. Once the signer is configured right, you can use the API at ease.
 
 <img src="images/11.png" />
 
 The transactional operation is required to sign with user’s private key before sending to API server. User can use the response message from cyb-signer and send the exact content to API server. However, non-transactional operation can be sent to API server directly.
 
+## Cybex Python Library
+
+If you use python, we have a built-in fast signing library called *ROMEapi*, you don't need to install a signer separately.
+
 Inspired by the trending crypto connection library CCXT, CYBEX API adopts similar functional api calls for easier usage. 
 
 public | private 
 --------- | ------- 
-loadMarkets|fetchBalance      
-fetchMarkets| createOrder
-fetchOHLCV|cancelOrder
-fetchTicker| fetchOrder
-fetchOrderBook |fetchOpenOrders 
-fetchTrades|fetchMyTrades
+load_markets|fetch_balance      
+fetch_markets| create_order
+fetch_OHLCV|cancel_order
+fetch_ticker| fetch_order
+fetch_order_book |fetch_open_orders 
+fetch_trades|fetch_my_trades
 
-# CYBEX API
+`pip install romeapi`
 
-## Download
+Once you have the library installed, you can access API endpoints pretty easily.
 
-## API
-### fetchMarkets
+```python
+ from romeapi import Cybex
+ # init with accountName and password
+ cybex = Cybex(accountName="sample_user", password="sample_password")
+ 
+ # market data
+ cybex.load_markets()
+ # ticker
+ cybex.fetch_ticker("ETH/USDT")
+ # private methods
+ cybex.fetch_balance()
+ # create a market buy order
+ cybex.create_market_buy_order("ETH/USDT", 0.1)
+```
 
-Fetches a list of all available markets from an exchange and returns an array of markets (objects with properties such as symbol, base, quote etc.). Some exchanges do not have means for obtaining a list of markets via their online API. For those, the list of markets is hardcoded.
-
-### loadMarkets ([reload]):
-Returns the list of markets as an object indexed by symbol and caches it with the exchange instance. Returns cached markets if loaded already, unless the reload = true flag is forced.
-    
-### fetchOrderBook 
-(symbol[, limit = undefined[, params = {}]]): 
-Fetch L2/L3 order book for a particular market trading symbol.
-
-### fetchTrades
- (symbol[, since[, [limit, [params]]]]): Fetch recent trades for a particular trading symbol.
-### fetchTicker
- (symbol): Fetch latest ticker data by trading symbol.
-### fetchBalance
- (): Fetch Balance.
-### createOrder
- (symbol, type, side, amount[, price[, params]])
-### createLimitBuyOrder
- (symbol, amount, price[, params])
-### createLimitSellOrder
- (symbol, amount, price[, params])
-### createMarketBuyOrder
- (symbol, amount[, params])
-### createMarketSellOrder
- (symbol, amount[, params])
-### cancelOrder
- (id[, symbol[, params]])
-### fetchOrder
- (id[, symbol[, params]])
-### fetchOrders
- ([symbol[, since[, limit[, params]]]])
-### fetchOpenOrders
- ([symbol[, since, limit, params]]]])
-### fetchClosedOrders
- ([symbol[, since[, limit[, params]]]])
-### fetchMyTrades
- ([symbol[, since[, limit[, params]]]])
+For more details, visit the official [github](https://github.com/CybexDex/RomeAPI).
 
 # cyb-signer installation
 
