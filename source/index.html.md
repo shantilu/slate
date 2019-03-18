@@ -722,7 +722,7 @@ curl 'https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
 
 > The above command returns JSON if success:
 
-```json
+```
 [
   [
     1546928820000,   // Open time
