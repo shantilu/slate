@@ -26,9 +26,61 @@ Cybex is a decentralized exchange on blockchain, so the usage of API is slightly
 
 The transactional operation is required to sign with user’s private key before sending to API server. User can use the response message from cyb-signer and send the exact content to API server. However, non-transactional operation can be sent to API server directly.
 
-<aside class="notice">
-Cyb-singer is based on Java, in order to make things work, make sure you have <a href="https://adoptopenjdk.net/installation.html" target="_blank">java</a> installed. 
-</aside>
+Inspired by the trending crypto connection library CCXT, CYBEX API adopts similar functional api calls for easier usage. 
+
+public | private 
+--------- | ------- 
+loadMarkets|fetchBalance      
+fetchMarkets| createOrder
+fetchOHLCV|cancelOrder
+fetchTicker| fetchOrder
+fetchOrderBook |fetchOpenOrders 
+fetchTrades|fetchMyTrades
+
+# CYBEX API
+
+## Download
+
+## API
+### fetchMarkets
+
+Fetches a list of all available markets from an exchange and returns an array of markets (objects with properties such as symbol, base, quote etc.). Some exchanges do not have means for obtaining a list of markets via their online API. For those, the list of markets is hardcoded.
+
+### loadMarkets ([reload]):
+Returns the list of markets as an object indexed by symbol and caches it with the exchange instance. Returns cached markets if loaded already, unless the reload = true flag is forced.
+    
+### fetchOrderBook 
+(symbol[, limit = undefined[, params = {}]]): 
+Fetch L2/L3 order book for a particular market trading symbol.
+
+### fetchTrades
+ (symbol[, since[, [limit, [params]]]]): Fetch recent trades for a particular trading symbol.
+### fetchTicker
+ (symbol): Fetch latest ticker data by trading symbol.
+### fetchBalance
+ (): Fetch Balance.
+### createOrder
+ (symbol, type, side, amount[, price[, params]])
+### createLimitBuyOrder
+ (symbol, amount, price[, params])
+### createLimitSellOrder
+ (symbol, amount, price[, params])
+### createMarketBuyOrder
+ (symbol, amount[, params])
+### createMarketSellOrder
+ (symbol, amount[, params])
+### cancelOrder
+ (id[, symbol[, params]])
+### fetchOrder
+ (id[, symbol[, params]])
+### fetchOrders
+ ([symbol[, since[, limit[, params]]]])
+### fetchOpenOrders
+ ([symbol[, since, limit, params]]]])
+### fetchClosedOrders
+ ([symbol[, since[, limit[, params]]]])
+### fetchMyTrades
+ ([symbol[, since[, limit[, params]]]])
 
 # cyb-signer installation
 
@@ -44,6 +96,10 @@ release | https://github.com/CybexDex/cyb-signer/releases
 `git clone https://github.com/CybexDex/cyb-signer.git`
 
 After cloning, please access release url stated, and put the jar file in “cyb-signer/target” folder.
+
+<aside class="notice">
+Cyb-singer is based on Java, in order to make things work, make sure you have <a href="https://adoptopenjdk.net/installation.html" target="_blank">java</a> installed. 
+</aside>
 
 <aside class="notice">
 If you prefer to build the jar file from source code, you could navigate to cyb-signer/scripts and run build script.<code>./build.sh</code> This requires you have jdk and <a href="https://maven.apache.org/index.html" target="_blank">maven</a> installed.
@@ -107,7 +163,13 @@ curl "http://127.0.0.1:8090/signer/v1/newOrder"
 ```
 
 ```javascript
-
+var data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
+fetch("http://localhost:8090/signer/v1/newOrder", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+})
+.then(response => response.json()); // parses response to JSON
 ```
 
 > The above command returns JSON structured like this:
