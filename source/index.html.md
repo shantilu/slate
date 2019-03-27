@@ -792,3 +792,129 @@ Once you get create and cancel orders working, you might start to do something m
 like analyzing signals, implementing a quantitative trading model of your own, and start to make money, hopefully.
 
 We wrote a sample strategy for that purpose, too. You can find it [here](https://github.com/CybexDex/cybex-python).
+
+
+# Cybex Web Socket Streams 
+To improve market data efficiency, Cybex provides a websockets connection to subscribe market data, so that users can 
+reduce latency and get streamed update.  
+
+* The base endpoint is: **wss://mdp.cybex.io**
+* Websocket connections are **subscription based**
+* All topic and symbols are **uppercase**
+* Steams send out update on every **500ms**
+* Prefix like JADE cannot be omitted and must be joint with an underscore.
+
+You may refer to the basic examples below in python and javascript(nodejs) for quick start. 
+
+```python
+# you will need  websocket client dependency 
+# pip install websocket_client
+from websocket import WebSocketApp
+
+def on_message(ws, message):
+    print(message)  
+
+def on_open(ws):
+    ws.send('{"type":"subscribe","topic":"TICKER.JADE_ETHJADE_USDT"}')
+        
+ws = WebSocketApp("wss://mdp.cybex.io", on_message = on_message)
+ws.on_open = on_open
+```
+
+```javascript
+// you will need websocket dependency 
+// npm install websocket
+const WebSocketClient = require('websocket').client;
+
+var wsClient = new WebSocketClient();
+
+wsClient.on('connect', function (connection) {
+    
+  connection.on('message', function (message) {
+        console.log(message)
+    });
+    
+    connection.sendUTF(JSON.stringify({"type":"subscribe","topic":"TICKER.JADE_ETHJADE_USDT"}));
+});
+
+wsClient.connect('wss://mdp.cybex.io');
+```
+
+
+## Orderbook
+This subscription topic retrieves orderbook of a given asset pair, with parameter of precision and level. 
+
+> {"type":"subscribe","topic":"ORDERBOOK.JADE_ETHJADE_USDT.5.1"}
+
+````
+{  
+   "sym":"JADE.ETHJADE.USDT",
+   "type":"depth",
+   "bids":[  
+      [  
+         "137.28",
+         "2.5522",
+         "350.366016"
+      ]
+   ],
+   "asks":[  
+      [  
+         "137.30001",
+         "3.0",
+         "411.9"
+      ]
+   ],
+   "time":"2019-03-27T07:27:27.263305Z",
+   "topic":"ORDERBOOK.JADE_ETHJADE_USDT.5.1"
+}
+````
+
+**Topic Name:** ORDERBOOK{AssetPair}.{Precision}.{Level}
+
+Parameter | Type | Mandatory | Example | Description |
+--------- | --------- | ----------- | ----------- |  ------ 
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
+Precision | INT | YES | 5 | Aggregated precision
+Level | INT | YES | 3 | Number of levels
+
+## Ticker
+This subscription topic retrieves ticker information of a given asset pair. 
+
+> {"type":"subscribe","topic":"TICKER.JADE_ETHJADE_USDT"}
+
+````
+{  
+   "type":"ticker",
+   "sym":"JADE.ETHJADE.USDT",
+   "px":"135.22999375",
+   "qty":"0.16000000",
+   "cymQty":"103.31605400",
+   "time":"2019-03-06T04:02:15.47252Z",
+   "topic":"TICKER.JADE_ETHJADE_USDT"
+}
+````
+
+**Topic Name:** TICKER{AssetPair}
+
+Parameter | Type | Mandatory | Example | Description |
+--------- | --------- | ----------- | ----------- |  ------ 
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
+
+## Lastprice
+This subscription topic retrieves price change information of a given asset pair. 
+
+> {"type":"subscribe","topic":"LASTPRICE.JADE_ETHJADE_USDT"}
+
+```
+{  
+   "time":"2019-03-27T07:29:28.545943Z",
+   "topic":"LASTPRICE.JADE_ETHJADE_USDT",
+   "px":137.32994872
+}
+```
+
+**Topic Name:** TICKER{AssetPair}
+
+Parameter | Type | Mandatory | Example | Description |
+--------- | --------- | ----------- | ----------- |  ------ 
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
