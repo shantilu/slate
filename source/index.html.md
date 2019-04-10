@@ -18,32 +18,32 @@ search: true
 
 # Introduction
 
-Welcome to the Cybex API! With the introduction of ROME(Realtime Order Matching Engine), realtime order matching is made possible, so is related fields like high frequency trading. You can use our API to access Cybex exchange. We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Welcome to the Cybex ROME API! Cybex is decentralized exchange based on graphene blockchain, striving to solve the efficiency problems of decentralized system.
 
-Cybex is a decentralized exchange based on blockchain, so the usage of API is slightly different compared to traditional ones. There is no convectional authentication, but every transactional operation needs to be signed with your private key. To facilitate the signing process, we developed the tool __cyb-signer__. Once the signer is configured right, you can use the API at ease.
+With the introduction of ROME(Realtime Order Matching Engine), realtime order matching is made possible, so is related fields like high frequency trading. ROME API endpoints are exposed so that you may use it to access Cybex exchange, with realtime response. As Cybex is based on blockchain, accessing API endpoints is somehow different compared to traditional ones. There is no authentication, all endpoints are **public**, but every transactional operation needs to be signed with your private key. 
 
 <img src="images/11.png" />
 
 The transactional operation is required to sign with user’s private key before sending to API server. User can use the response message from cyb-signer and send the exact content to API server. However, non-transactional operation can be sent to API server directly.
 
+To facilitate the signing process and enhance efficiency, we developed the open source tool __cyb-signer__(java), featuring fast signing, please refer the [signer section](#signer-endpoints) of the document for details. 
+
+For python and javascript users, there is built in fast signing module, so that no need for standalone signer process.
+
+
 ## Cybex Python Library
 
-If you use python, we have a built-in fast signing library called *ROMEapi*, you don't need to install a signer separately.
+If you use python, you may the library package called *ROMEapi*, with fast signing module included, you don't need to install a signer separately.
 
-Inspired by the trending crypto connection library CCXT, CYBEX API adopts similar functional api calls for easier usage. 
+Inspired by the trending crypto library CCXT, CYBEX python library *ROMEapi* adopts similar functional calls interface for easier usage. 
 
-public | private 
---------- | ------- 
-load_markets|fetch_balance      
-fetch_markets| create_order
-fetch_OHLCV|cancel_order
-fetch_ticker| fetch_order
-fetch_order_book |fetch_open_orders 
-fetch_trades|fetch_my_trades
+### Installation
 
 `pip install romeapi`
 
 Once you have the library installed, you can access API endpoints pretty easily.
+
+### Usage
 
 ```python
  from romeapi import Cybex
@@ -60,253 +60,41 @@ Once you have the library installed, you can access API endpoints pretty easily.
  cybex.create_market_buy_order("ETH/USDT", 0.1)
 ```
 
-For more details, visit the official [github](https://github.com/CybexDex/RomeAPI).
+This is a brief overview of the cybex romeapi supported functions.
 
-# cyb-signer installation
-
-## Download
-
-Signer is a open source software, which can be obtained from github. You can use git to clone or download the zip directly.
-
-Type | Link 
+public | private 
 --------- | ------- 
-signer | https://github.com/CybexDex/cyb-signer.git
-release | https://github.com/CybexDex/cyb-signer/releases
+load_markets|fetch_balance      
+fetch_markets| create_order
+fetch_OHLCV|cancel_order
+fetch_ticker| fetch_order
+fetch_order_book |fetch_open_orders 
+fetch_trades|fetch_my_trades
 
-`git clone https://github.com/CybexDex/cyb-signer.git`
+For source code and more usage details, please visit the official [github](https://github.com/CybexDex/RomeAPI). For more examples, please visit our example [github](https://github.com/CybexDex/cybex-python-demo).
 
-After cloning, please access release url stated, and put the jar file in “cyb-signer/target” folder.
+## Cybex JavaScript Library
 
-<aside class="notice">
-Cyb-singer is based on Java, in order to make things work, make sure you have <a href="https://adoptopenjdk.net/installation.html" target="_blank">java</a> installed. 
-</aside>
+Cybex JavaScript library is under development and will be released soon.
 
-<aside class="notice">
-If you prefer to build the jar file from source code, you could navigate to cyb-signer/scripts and run build script.<code>./build.sh</code> This requires you have jdk and <a href="https://maven.apache.org/index.html" target="_blank">maven</a> installed.
-</aside>
+## Cybex CCXT integration and other language bindings
 
-## Config
-
-> Following are example for your reference:
-
-```
-SIGNER_SERVER_PORT=8090 (an available port in your local pc)
-PRIVATE_KEY=5JicqQ9tcwYoFGXPtFvdM3jAmwEz6Qi1zsuT7muNXCrRND2XXXX (your private key)
-ACCOUNT_ID=1.2.xxxxx (your account id in cybex)
-API_SERVER_ADDRESS=api.cybex.io
-```
-
-All parameters present in the file __env.properties__ under “cyb-signer/scripts” folder.
-
-<aside class="warning">
-ACCOUNT ID is not the same as ACCOUNT NAME and its format is 1.2.XXXXX.
-</aside>
-
-<aside class="warning"> 
-Private key is not your login password in cybex website
-</aside>
-
-## Launch
-You could use start script to launch/stop cyb-signer. Once cyb-signer starts, you don’t need to restart it unless you want to change parameters.
-
-For Linux users, run
-
-`./start.sh` `./stop.sh` 
-
-For windows users, run
-
-`./start.bat` `./stop.bat` 
-
-For mac users, run
-
-`startMac.sh`
-
-Your signer will be available at http://localhost:8090(your port)
-<aside class="warning">
-To increase security of signing, cyb-signer and REST-client must be in the same computer, using <b>localhost</b> in the url. (For example, following request will fail: http://192.168.1.10:8090/signer/v1/newOrder)
-</aside>
-
-# Signer Endpoints
-
-## Create New Order
-```python
-import requests
-
-url = "http://127.0.0.1:8090/signer/v1" + "/newOrder"
-data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
-response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
-response.json()
-```
-
-```shell
-curl "http://127.0.0.1:8090/signer/v1/newOrder"
-```
-
-```javascript
-var data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
-fetch("http://localhost:8090/signer/v1/newOrder", {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
-})
-.then(response => response.json()); // parses response to JSON
-```
-
-> The above command returns JSON structured like this:
-
-```json
-  {
-    "transactionType" : "NewLimitOrder",
-    "transactionId" : "40c275d77233c5761472673bd0532150dde723a0",
-    "refBlockNum" : 18956,
-    "refBlockPrefix" : 507092400,
-    "txExpiration" : 1546919505,
-    "fee" : {
-      "assetId" : "1.3.0",
-      "amount" : 55
-    },
-    "seller" : "1.2.40658",
-    "amountToSell" : {
-      "assetId" : "1.3.27",
-      "amount" : 1466699999
-    },
-    "minToReceive" : {
-      "assetId" : "1.3.2",
-      "amount" : 10000000
-    },
-    "expiration" : 1546991999,
-    "signature" : "1c7a00b61039b6bc1ace93916446207a28a69e60a97fbd6b267518754a13e7adca463239452b0e00aa90b71b30a57ea4d65fa4cee44a30ab2c7841fb5cd0145913",
-    "fill_or_kill" : 0
-  }
-
-```
-
-Create New Order
-
-### HTTP Request
-
-`POST http://localhost:8090/signer/v1/newOrder`
-
-### Query Parameters
-
-Parameter | Example | Description
---------- | ------- | -----------
-assetPair | ETH/USDT | 
-price | true | 
-quantity | 10 | 
-side | buy/sell | 
-
-## Create Cancel Order
-
-```python
-import requests
-
-url = "http://127.0.0.1:8090/signer/v1" + "/cancelOrder"
-data = {'originalTransactionId': trxid}
-response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
-response.json()
-```
-
-```shell
-curl --data '{"originalTransactionId": "88cecaa11b8584fb21243cd57ed2227e7c181452"}' http://localhost:8090/signer/v1/cancelOrder
-```
-
-```javascript
-
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "transactionType" : "Cancel",
-  "transactionId" : "e3a8b5c5afd2daa038707aa2e9e2d60701d726c0",
-  "originalTransactionId" : "88cecaa11b8584fb21243cd57ed2227e7c181452",
-  "refBlockNum" : 18956,
-  "refBlockPrefix" : 507092400,
-  "txExpiration" : 1546950595,
-  "orderId" : "0",
-  "fee" : {
-    "assetId" : "1.3.0",
-    "amount" : 5
-  },
-  "feePayingAccount" : "1.2.40658",
-  "signature" : "1c313f1f34c7975e3999d483ddf1d2d2322751593b82f3f087f987e95a03b1639d696e2348105f2a9070c11c974b2c94ed616d95559108d7714f516fa5ee55d559"
-}
-```
-
-This endpoint cancel an order with a given id.
-
-### HTTP Request
-
-`GET http://127.0.0.1:8090/signer/v1/cancelOrder`
-
-### URL Parameters
-
-Parameter | Example
---------- | -----------
-originalTransactionId | 88cecaa11b8584fb21243cd57ed2227e7c181452
-
-## 	Create CancelAll
-
-```python
-import requests
-
-url = "http://127.0.0.1:8090/signer/v1" + "/cancelAll"
-data = {'assetPair': symbol}
-response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
-response.json()
-```
-
-```shell
-curl --data '{"assetPair": "ETH/USDT"}' http://localhost:8090/signer/v1/cancelAl
-```
-
-```javascript
-const Cybex = require('Cybex');
-
-let api = Cybex.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "transactionType" : "CancelAll",
-  "transactionId" : "9616b03391ccf0107c58326f2674c4b51a7bf284",
-  "refBlockNum" : 18956,
-  "refBlockPrefix" : 507092400,
-  "txExpiration" : 1547007167,
-  "fee" : {
-    "assetId" : "1.3.0",
-    "amount" : 50
-  },
-  "seller" : "1.2.40658",
-  "sellAssetId" : "1.3.2",
-  "recvAssetId" : "1.3.27",
-  "signature" : "1c3435fd231625f61a516e44bcb193f6344441974cf76def07
-1ea01e82a1a2d0043e44ee28993d523fa13bad5445a297cdeef6f0b6a8650
-7e8cbba7841ec6a9010"
-}
-
-```
-
-This endpoint deletes all orders on a given asset pair.
-
-### HTTP Request
-
-`POST http://localhost:8090/signer/v1/cancelAll`
-
-### URL Parameters
-
-Parameter | Example | Description
---------- | ----------- | -----------
-assetPair | ETH/USDT | Use “CYB/CYB” to cancel all your open orders no matter what asset pairs they are in
+CCXT is a popular crypto trading library. Cybex CCXT integration is under development. For other languages bindings and further improvement, we welcome the generous support from the community.
 
 # API Server Endpoints
 
-## Query reference data
+Before get started, please note the list of order status notation of the cybex system.
+
+ID |Status | Details 
+----|--------- | ------- 
+1|PENDING_NEW| new order confirmed by ROME if valid, not yet confirmed chain  
+2|OPEN| open order, confirmed on chain 
+3|PENDING_CXL| order cancel confirmed by ROME, not yet confirmed chain
+4|CANCELED| order cancel confirmed on chain 
+5|FILLED | order fully or partially  filled
+6|REJECTED| order rejected by ROME if not valid
+
+## Query market info
 
 ```python
 import requests
@@ -336,14 +124,6 @@ const Cybex = require('Cybex');
       "assetName" : "USDT",
       "assetId" : "1.3.27",
       "precision" : 6
-    }, {
-      "assetName" : "CYB",
-      "assetId" : "1.3.0",
-      "precision" : 5
-    }, {
-      "assetName" : "EOS",
-      "assetId" : "1.3.4",
-      "precision" : 6
     },
      ......
     ],
@@ -367,7 +147,7 @@ const Cybex = require('Cybex');
   }
 ```
 
-It will return some static data regarding exchange, e.g. chain id, reference block id, available assets, available asset pairs and fee info.
+It will return market information regarding exchange, e.g. chain id, reference block id, available assets, available asset pairs and fee info.
 
 ### HTTP Request
 
@@ -548,7 +328,9 @@ const Cybex = require('Cybex');
 
 ```
 
-This API endpoint is used to query order statuses.
+This API endpoint is used to query trades. Trades are filled orders. accountName and assetPair cannot both be null. 
+
+Please note that this endpoint don't support ID query.
 
 ### HTTP Request
 
@@ -558,7 +340,7 @@ This API endpoint is used to query order statuses.
     
     Parameter | Type | Mandatory | Example | Description
     --------- | --------- | ----------- | ----------- |  ----------- 
-    accountName | STRING |  YES | 1.2.1321  | Your-account-name
+    accountName | STRING |  No | 1.2.1321  | Your-account-name
     reverse | BOOL |  NO |  | If it is true, the most recent record will be shown at the beginning
     assetPair | STRING |  NO | ETH/USDT | Asset pair filter
     startTime | STRING |  NO | 2018-01-07T01:20:48.647910Z | Beginning time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ
@@ -689,7 +471,7 @@ assetPair | STRING |  YES | ETH/USDT  | target asset pair
 limit | INT | YES | 10 | Number of levels
     
 
-## Query candle stick
+## Query kline data
 
 ```python
 url = "https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
@@ -752,46 +534,256 @@ limit | INT | NO | Level to be shown
 useTradePrice | BOOL | NO | Default is "false", and this api returns market prices. If it is specified as "true" then this api returns our exchange's prices.  
 
    
-# Wrap it up
+# Cyb-signer Installation
 
-## Simple start
+## Download
 
-```python
-from cybexapi import SignerConnector, CybexRestful
+Cyb-signer, designed for quick signing for the Cybex system, is open source on github. If you are using Cybex ROME API with languages other than Python and JavsScript, you may find it useful for signing. 
 
-# init the signer object and api rest object
-signer = SignerConnector(api_root="http://127.0.0.1:8090/signer/v1")
-api_server = CybexRestful(api_root="https://api.cybex.io/v1")
+You can use git to clone or download the zip directly.
 
-# prepar the order data you want to place
-# then sign the new limit order
-order_msg = signer.prepare_order_message(asset_pair='ETH/USDT', price=80, quantity=0.1, side='buy')
-# extract the trx id for later use
-trx_id = order_msg['transactionId']
+Type | Link 
+--------- | ------- 
+signer | https://github.com/CybexDex/cyb-signer.git
+release | https://github.com/CybexDex/cyb-signer/releases
 
-# then exexcute
-order_result = api_server.send_transaction(order_msg)
+`git clone https://github.com/CybexDex/cyb-signer.git`
 
-# Now we do the cancel operation 
-# prepare the trx id
-# then sign the cancel order
-cancel_msg = signer.prepare_cancel_message(trx_id)
-# then exexcute
-cancel_result = api_server.send_transaction(cancel_msg)
+After cloning, please access release url stated, and put the jar file in “cyb-signer/target” folder.
+
+<aside class="notice">
+Cyb-singer is based on Java, in order to make things work, make sure you have <a href="https://adoptopenjdk.net/installation.html" target="_blank">java</a> installed. 
+</aside>
+
+<aside class="notice">
+If you prefer to build the jar file from source code, you could navigate to cyb-signer/scripts and run build script.<code>./build.sh</code> This requires you have jdk and <a href="https://maven.apache.org/index.html" target="_blank">maven</a> installed.
+</aside>
+
+## Config
+
+> Following are example for your reference:
+
+```
+SIGNER_SERVER_PORT=8090 (an available port in your local pc)
+PRIVATE_KEY=5JicqQ9tcwYoFGXPtFvdM3jAmwEz6Qi1zsuT7muNXCrRND2XXXX (your private key)
+ACCOUNT_ID=1.2.xxxxx (your account id in cybex)
+API_SERVER_ADDRESS=api.cybex.io
 ```
 
-Hooray, now you know everything about Cybex API. We wrap all endpoints together, and come up with a [api connecter](https://github.com/CybexDex/cybex-python/blob/master/cybexapi.py).
+All parameters present in the file __env.properties__ under “cyb-signer/scripts” folder.
 
-Here is an demo of usage of the API connector. Make sure you have the signer running beforehand.
+<aside class="warning">
+ACCOUNT ID is not the same as ACCOUNT NAME and its format is 1.2.XXXXX.
+</aside>
 
-The demo shows the process of create a new buy order and then cancel it. You may also find the complete script [here](https://github.com/CybexDex/cybex-python/blob/master/cybex-demo.py)
+<aside class="warning"> 
+Private key is not your login password in cybex website
+</aside>
 
+## Launch
+You could use start script to launch/stop cyb-signer. Once cyb-signer starts, you don’t need to restart it unless you want to change parameters.
 
-## Getting to pro
-Once you get create and cancel orders working, you might start to do something more exciting, 
-like analyzing signals, implementing a quantitative trading model of your own, and start to make money, hopefully.
+For Linux users, run
 
-We wrote a sample strategy for that purpose, too. You can find it [here](https://github.com/CybexDex/cybex-python).
+`./start.sh` `./stop.sh` 
+
+For windows users, run
+
+`./start.bat` `./stop.bat` 
+
+For mac users, run
+
+`startMac.sh`
+
+Your signer will be available at http://localhost:8090(your port)
+<aside class="warning">
+To increase security of signing, cyb-signer and REST-client must be in the same computer, using <b>localhost</b> in the url. (For example, following request will fail: http://192.168.1.10:8090/signer/v1/newOrder)
+</aside>
+
+# Cyb-signer Endpoints
+
+## Create New Order
+```python
+import requests
+
+url = "http://127.0.0.1:8090/signer/v1" + "/newOrder"
+data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
+response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
+response.json()
+```
+
+```shell
+curl "http://127.0.0.1:8090/signer/v1/newOrder"
+```
+
+```javascript
+var data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
+fetch("http://localhost:8090/signer/v1/newOrder", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+})
+.then(response => response.json()); // parses response to JSON
+```
+
+> The above command returns JSON structured like this:
+
+```json
+  {
+    "transactionType" : "NewLimitOrder",
+    "transactionId" : "40c275d77233c5761472673bd0532150dde723a0",
+    "refBlockNum" : 18956,
+    "refBlockPrefix" : 507092400,
+    "txExpiration" : 1546919505,
+    "fee" : {
+      "assetId" : "1.3.0",
+      "amount" : 55
+    },
+    "seller" : "1.2.40658",
+    "amountToSell" : {
+      "assetId" : "1.3.27",
+      "amount" : 1466699999
+    },
+    "minToReceive" : {
+      "assetId" : "1.3.2",
+      "amount" : 10000000
+    },
+    "expiration" : 1546991999,
+    "signature" : "1c7a00b61039b6bc1ace93916446207a28a69e60a97fbd6b267518754a13e7adca463239452b0e00aa90b71b30a57ea4d65fa4cee44a30ab2c7841fb5cd0145913",
+    "fill_or_kill" : 0
+  }
+
+```
+
+Creates new limit order, with details of asset pair, price, amount and side. Please note that Cybex only supports **limit order** creation.
+
+### HTTP Request
+
+`POST http://localhost:8090/signer/v1/newOrder`
+
+### Query Parameters
+
+Parameter | Example | Description
+--------- | ------- | -----------
+assetPair | ETH/USDT | the targeted asset pair of trading intention 
+price | true | order price in float number
+quantity | 10 | the amount of trading in float number
+side | buy/sell | buy side or sell side
+
+## Create Cancel Order
+
+```python
+import requests
+
+url = "http://127.0.0.1:8090/signer/v1/cancelOrder"
+data = {'originalTransactionId': trxid}
+response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
+response.json()
+```
+
+```shell
+curl --data '{"originalTransactionId": "88cecaa11b8584fb21243cd57ed2227e7c181452"}' http://localhost:8090/signer/v1/cancelOrder
+```
+
+```javascript
+var data = {'originalTransactionId': trxid};
+fetch("http://127.0.0.1:8090/signer/v1/cancelOrder", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+})
+.then(response => response.json()); // parses response to JSON
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "transactionType" : "Cancel",
+  "transactionId" : "e3a8b5c5afd2daa038707aa2e9e2d60701d726c0",
+  "originalTransactionId" : "88cecaa11b8584fb21243cd57ed2227e7c181452",
+  "refBlockNum" : 18956,
+  "refBlockPrefix" : 507092400,
+  "txExpiration" : 1546950595,
+  "orderId" : "0",
+  "fee" : {
+    "assetId" : "1.3.0",
+    "amount" : 5
+  },
+  "feePayingAccount" : "1.2.40658",
+  "signature" : "1c313f1f34c7975e3999d483ddf1d2d2322751593b82f3f087f987e95a03b1639d696e2348105f2a9070c11c974b2c94ed616d95559108d7714f516fa5ee55d559"
+}
+```
+
+This endpoint cancel an order with a given id.
+
+### HTTP Request
+
+`GET http://127.0.0.1:8090/signer/v1/cancelOrder`
+
+### URL Parameters
+
+Parameter | Example
+--------- | -----------
+originalTransactionId | 88cecaa11b8584fb21243cd57ed2227e7c181452
+
+## 	Create CancelAll
+
+```python
+import requests
+
+url = "http://127.0.0.1:8090/signer/v1/cancelAll"
+data = {'assetPair': symbol}
+response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
+response.json()
+```
+
+```shell
+curl --data '{"assetPair": "ETH/USDT"}' http://localhost:8090/signer/v1/cancelAl
+```
+
+```javascript
+var data = {'assetPair': symbol};
+fetch("http://127.0.0.1:8090/signer/v1/cancelAll", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+})
+.then(response => response.json()); // parses response to JSON
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "transactionType" : "CancelAll",
+  "transactionId" : "9616b03391ccf0107c58326f2674c4b51a7bf284",
+  "refBlockNum" : 18956,
+  "refBlockPrefix" : 507092400,
+  "txExpiration" : 1547007167,
+  "fee" : {
+    "assetId" : "1.3.0",
+    "amount" : 50
+  },
+  "seller" : "1.2.40658",
+  "sellAssetId" : "1.3.2",
+  "recvAssetId" : "1.3.27",
+  "signature" : "1c3435fd231625f61a516e44bcb193f6344441974cf76def071ea01e82a1a2d0043e44ee28993d523fa13bad5445a297cdeef6f0b6a86507e8cbba7841ec6a9010"
+}
+
+```
+
+This endpoint deletes all orders on a given asset pair.
+
+### HTTP Request
+
+`POST http://localhost:8090/signer/v1/cancelAll`
+
+### URL Parameters
+
+Parameter | Example | Description
+--------- | ----------- | -----------
+assetPair | ETH/USDT | Use “CYB/CYB” to cancel all your open orders no matter what asset pairs they are in
 
 
 # Cybex Web Socket Streams 
@@ -894,7 +886,7 @@ This subscription topic retrieves ticker information of a given asset pair.
 }
 ````
 
-**Topic Name:** TICKER{AssetPair}
+**Topic Name:** LASTPRICE{AssetPair}
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
