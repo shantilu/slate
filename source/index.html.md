@@ -7,7 +7,7 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - javascript
 
 toc_footers:
-  - <a href='https://Cybex.io'>By Cybex, Decentralized Exchange</a>
+  - <a href='https://cybex.io'>By Cybex, Decentralized Exchange</a>
   - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -40,7 +40,7 @@ However, non-transactional operation can be sent to API server directly.
 
 To facilitate the signing process and enhance efficiency, we developed the open source tool __cyb-signer__(java), featuring fast signing, please refer the [signer section](#signer-endpoints) of the document for details. 
 
-For python and javascript users, there is built in fast signing module, so that no need for standalone signer process.
+For python users, we have built a signing module so user do not need a standalone process. Our developers are currently working on a similar module on JavaScript. 
 
 
 ## Cybex Python Library
@@ -53,35 +53,28 @@ Inspired by the trending crypto library CCXT, Cybex python library *ROMEapi* ado
 
 `pip install romeapi`
 
-Once you have the library installed, you can access API endpoints pretty easily.
+Once you have the library installed, you can access ROME API endpoints pretty easily.
 
 ### Usage
 
 ```python
  from romeapi import Cybex
  # init with accountName and password
- Cybex = Cybex(accountName="sample_user", password="sample_password")
+ cybex = Cybex(accountName="sample_user", password="sample_password")
  
  # market data
- Cybex.load_markets()
+ cybex.load_markets()
  # ticker
- Cybex.fetch_ticker("ETH/USDT")
- # private methods
- Cybex.fetch_balance()
+ cybex.fetch_ticker("ETH/USDT")
+ # check account balance
+ cybex.fetch_balance()
  # create a market buy order
- Cybex.create_market_buy_order("ETH/USDT", 0.1)
+ order_transaction_id, result = cybex.create_market_buy_order("ETH/USDT", 0.1)
+ # query with transcation id
+ orders = cybex.fetch_order(order_transaction_id)
+ # cancel order
+ cancel_order = cybex.cancel_order(order_transaction_id)
 ```
-
-This is a brief overview of the Cybex *ROMEapi* supported functions.
-
-public | private 
---------- | ------- 
-load_markets|fetch_balance      
-fetch_markets| create_order
-fetch_OHLCV|cancel_order
-fetch_ticker| fetch_order
-fetch_order_book |fetch_open_orders 
-fetch_trades|fetch_my_trades
 
 For source code and more usage details, please visit the official [github](https://github.com/CybexDex/RomeAPI). For more examples, please visit our example [github](https://github.com/CybexDex/Cybex-python-demo).
 
@@ -112,16 +105,16 @@ Order type is the category for function call get_open_orders and get_closed_orde
 
 ```python
 import requests
-url = "https://api.Cybex.io/v1/refData"
+url = "https://api.cbex.io/v1/refData"
 requests.get(url)
 ```
 
 ```shell
-curl "https://api.Cybex.io/v1/refData"
+curl "https://api.cbex.io/v1/refData"
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/refData').then(res => res.json())
+fetch('https://api.cbex.io/v1/refData').then(res => res.json())
 ```
 
 > The above command returns JSON structured like this:
@@ -165,24 +158,24 @@ It will return market information regarding exchange, e.g. chain id, reference b
 
 ### HTTP Request
 
-`GET  https://api.Cybex.io/v1/refData`
+`GET  https://api.cbex.io/v1/refData`
 
 ## Execute transaction 
 
 ```python
 import requests
-url = "https://api.Cybex.io/v1/transaction"
+url = "https://api.cbex.io/v1/transaction"
 data = {"transactionType": "NewLimitOrder", "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": { "assetId": "1.3.0", "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000},  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}
 requests.post(url, json=data, headers={'Content-type': 'application/json'})
 ```
 
 ```shell
-curl --data '{ "transactionType": "NewLimitOrder",  "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": {    "assetId": "1.3.0",    "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000  },  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}' https://api.Cybex.io/v1/transaction
+curl --data '{ "transactionType": "NewLimitOrder",  "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": {    "assetId": "1.3.0",    "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000  },  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}' https://api.cbex.io/v1/transaction
 ```
 
 ```javascript
 const data = {"transactionType": "NewLimitOrder", "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": { "assetId": "1.3.0", "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000},  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}
-fetch('https://api.Cybex.io/v1/transaction', {
+fetch('https://api.cbex.io/v1/transaction', {
   method: 'POST', // or 'PUT'
   body: JSON.stringify(data), // data can be `string` or {object}!
   headers:{
@@ -217,25 +210,25 @@ User needs to put the return content from cyb-signer in the content of this post
 
 ### HTTP Request
 
-`POST https://api.Cybex.io/v1/transaction`
+`POST https://api.cbex.io/v1/transaction`
 
 ### URL Parameters
-POST with the json content from cyb-signer in the content of this post message
+POST with the json content,ie, the formatted order message with valid signature, from cyb-signer as the content body of this post request.
 
 ## Query order status
 
 ```python
 import requests
-url = "https://api.Cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED"
+url = "https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.Cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED'
+curl 'https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED'
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED').then(res => res.json())
+fetch('https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -277,7 +270,7 @@ This API endpoint is used to query order statuses.
 
 ### HTTP Request
 
-`GET https://api.Cybex.io/v1/order`
+`GET https://api.cbex.io/v1/order`
 
 ### URL Parameters
     
@@ -297,16 +290,16 @@ transactionId | STRING | NO | 410sdl8ila | Query by transaction id
 
 ```python
 import requests
-url = "https://api.Cybex.io/v1/trade?accountName=XXXXXX&reverse=true"
+url = "https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.Cybex.io/v1/trade?accountName=XXXXXX&reverse=true'
+curl 'https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true'
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/trade?accountName=XXXXXX&reverse=true').then(res => res.json())
+fetch('https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -344,7 +337,7 @@ Please note that this endpoint don't support ID query.
 
 ### HTTP Request
 
-`GET https://api.Cybex.io/v1/trade`
+`GET https://api.cbex.io/v1/trade`
 
 ### URL Parameters
     
@@ -362,16 +355,16 @@ Please note that this endpoint don't support ID query.
 
 ```python
 import requests
-url = "https://api.Cybex.io/v1/position?accountName=1.2.40658"
+url = "https://api.cbex.io/v1/position?accountName=1.2.40658"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.Cybex.io/v1/position?accountName=1.2.40658'
+curl 'https://api.cbex.io/v1/position?accountName=1.2.40658'
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/position?accountName=1.2.40658').then(res => res.json())
+fetch('https://api.cbex.io/v1/position?accountName=1.2.40658').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -399,7 +392,7 @@ This API endpoint is used to query account current position.
 
 ### HTTP Request
 
-`GET https://api.Cybex.io/v1/position`
+`GET https://api.cbex.io/v1/position`
 
 ### URL Parameters
     
@@ -410,16 +403,16 @@ accountName | STRING |  YES | 1.2.1321  | Your-account-name
 ## Query order book
 
 ```python
-url = "https://api.Cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3"
+url = "https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.Cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3'
+curl 'https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3'
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3').then(res => res.json())
+fetch('https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -470,7 +463,7 @@ This API endpoint is used to query order book of given asset pair.
 
 ### HTTP Request
 
-`GET https://api.Cybex.io/v1/orderBook`
+`GET https://api.cbex.io/v1/orderBook`
 
 ### URL Parameters
     
@@ -483,16 +476,16 @@ limit | INT | YES | 10 | Number of levels
 ## Query kline data
 
 ```python
-url = "https://api.Cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
+url = "https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.Cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
+curl 'https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
 ```
 
 ```javascript
-fetch('https://api.Cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').then(res => res.json())
+fetch('https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -532,7 +525,7 @@ fetch('https://api.Cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').t
 
 ### HTTP Request
 
-`GET https://api.Cybex.io/v1/klines`
+`GET https://api.cbex.io/v1/klines`
 
 ### URL Parameters
 
@@ -577,10 +570,10 @@ If you prefer to build the jar file from source code, you could navigate to cyb-
 > Following are example for your reference:
 
 ```
-SIGNER_SERVER_PORT=8090 (an available port in your local pc)
-PRIVATE_KEY=5JicqQ9tcwYoFGXPtFvdM3jAmwEz6Qi1zsuT7muNXCrRND2XXXX (your private key)
-ACCOUNT_ID=1.2.xxxxx (your account id in Cybex)
-API_SERVER_ADDRESS=api.Cybex.io
+SIGNER_SERVER_PORT=8090 #an available local port
+PRIVATE_KEY=5JicqQ9tcwYoFGXPtFvdM3jAmwEz6Qi1zsuT7muNXCrRND2XXXX #your private key
+ACCOUNT_ID=1.2.xxxxx #your cybex account id
+API_SERVER_ADDRESS=api.cybex.io
 ```
 
 All parameters present in the file __env.properties__ under “cyb-signer/scripts” folder.
@@ -619,7 +612,7 @@ To increase security of signing, cyb-signer and REST-client must be in the same 
 ```python
 import requests
 
-url = "http://127.0.0.1:8090/signer/v1" + "/newOrder"
+url = "http://127.0.0.1:8090/signer/v1/newOrder"
 data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
 response = requests.post(url, json=data, headers={'Content-type': 'application/json'})
 response.json()
@@ -675,12 +668,14 @@ Creates new limit order, with details of asset pair, price, amount and side. Ple
 
 ### Query Parameters
 
-Parameter | Example | Description
---------- | ------- | -----------
-assetPair | ETH/USDT | the targeted asset pair of trading intention 
-price | true | order price in float number
-quantity | 10 | the amount of trading in float number
-side | buy/sell | buy side or sell side
+All fields are required.
+
+Parameter | Type|  Example | Description
+--------- | ----| ------- | -----------
+assetPair | STRING | ETH/USDT | the targeted asset pair of trading intention 
+price | FLOAT | 162.1 | order price in float number
+quantity | FLOAT |0.1 | the amount of trading in float number
+side | STRING | buy/sell | buy side or sell side
 
 ## Create Cancel Order
 
@@ -735,9 +730,11 @@ This endpoint cancel an order with a given id.
 
 ### URL Parameters
 
-Parameter | Example
---------- | -----------
-originalTransactionId | 88cecaa11b8584fb21243cd57ed2227e7c181452
+All fields are required.
+
+Parameter | Type |Example
+--------- | ---| -----------
+originalTransactionId| STRING | 88cecaa11b8584fb21243cd57ed2227e7c181452
 
 ## 	Create CancelAll
 
@@ -793,16 +790,18 @@ This endpoint cancel all orders on a given asset pair.
 
 ### URL Parameters
 
-Parameter | Example | Description
---------- | ----------- | -----------
-assetPair | ETH/USDT | Use “CYB/CYB” to cancel all your open orders no matter what asset pairs they are in
+All fields are required.
+
+Parameter | Type |Example | Description
+--------- | --- |----------- | -----------
+assetPair | STRING |ETH/USDT | Use “CYB/CYB” to cancel all your open orders no matter what asset pairs they are in
 
 
 # Cybex Web Socket Streams 
 To improve market data efficiency, Cybex provides a websockets connection to subscribe market data, so that users can 
 reduce latency and get streamed update.  
 
-* The base endpoint is: **wss://mdp.Cybex.io**
+* The base endpoint is: **wss://mdp.cybex.io**
 * Websocket connections are **subscription based**
 * All topic and symbols are **uppercase**
 * Steams send out update on every **500ms**
@@ -821,7 +820,7 @@ def on_message(ws, message):
 def on_open(ws):
     ws.send('{"type":"subscribe","topic":"TICKER.JADE_ETHJADE_USDT"}')
         
-ws = WebSocketApp("wss://mdp.Cybex.io", on_message = on_message)
+ws = WebSocketApp("wss://mdp.cybex.io", on_message = on_message)
 ws.on_open = on_open
 ```
 
@@ -841,7 +840,7 @@ wsClient.on('connect', function (connection) {
     connection.sendUTF(JSON.stringify({"type":"subscribe","topic":"TICKER.JADE_ETHJADE_USDT"}));
 });
 
-wsClient.connect('wss://mdp.Cybex.io');
+wsClient.connect('wss://mdp.cybex.io');
 ```
 
 
