@@ -4,7 +4,7 @@
 @import 'icon-font';
 
 /*
-Copyright 2008-2013 Concur Technologies, Inc.
+Copyright 2018-2019 Cybex Technologies Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
@@ -19,9 +19,10 @@ License for the specific language governing permissions and limitations
 under the License.
 */
 
+$prime-color: #ff7306;
 $print-color: #999;
 $print-color-light: #ccc;
-$print-font-size: 12px;
+$print-font-size: 14px;
 
 body {
   @extend %default-font;
@@ -37,7 +38,7 @@ body {
 }
 
 .content {
-  font-size: 12px;
+  font-size: $print-font-size;
 
   pre, code {
     @extend %code-font;
@@ -85,11 +86,12 @@ body {
     font-size: 2.5em;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
-    margin-top: 1em;
+    margin-top: 3em;
     margin-bottom: $h1-margin-bottom;
     border: 2px solid $print-color-light;
     border-width: 2px 0;
     text-align: center;
+    color:$prime-color;
   }
 
   h2 {

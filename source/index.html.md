@@ -30,7 +30,7 @@ the fastest order confirmation and matching notificaiton.
 All these highlights make Cybex DEX trading performance meets the highest standards of industry and shows good experince
  as top centralized exchanges such as Binance, Bitmex.
 
-<img src="images/11.png" />
+<img src="images/12.png" width="100%" />
 
 ROME API endpoints are exposed so that Cybex exchange is more approachable, with realtime response. 
 As Cybex is based on blockchain, all endpoints are **public**, but every transactional operation needs to be signed with your private key. 
@@ -38,9 +38,9 @@ The transactional operation is required to sign with user’s private key before
 User can use the response message from cyb-signer and send the exact content to API server. 
 However, non-transactional operation can be sent to API server directly.
 
-To facilitate the signing process and enhance efficiency, we developed the open source tool __cyb-signer__(java), featuring fast signing, please refer the [signer section](#signer-endpoints) of the document for details. 
+To facilitate the signing process, we developed the open source tool __cyb-signer__(java), featuring fast signing, please refer the [signer section](#signer-endpoints) of the document for details. The purpose of the service is to provide segregation between trading logic and signing logic so that the traders or the trading program don’t have to possess any key.
 
-For python users, we have built a signing module so user do not need a standalone process. Our developers are currently working on a similar module on JavaScript. 
+For python users, we have developed a connection library with built-in quick signing module. Our developers are currently working on a similar module on JavaScript. 
 
 
 ## Cybex Python Library
@@ -88,7 +88,8 @@ CCXT is a popular crypto trading library. Cybex CCXT integration is under develo
 
 # API Server Endpoints
 
-Before get started, please note the list of order status notation of the Cybex system, as there are more order statuses other than OPEN, FILLED and CANCELED.
+Before get started, please note the list of order status notation of the Cybex system, which is essential in order query/filter.
+As a decentralized system, there are more order statuses other than OPEN, FILLED and CANCELED.
 
 ID |Status | Type* | Details 
 ----|---------|---- | ------- 
@@ -105,16 +106,16 @@ Order type is the category for function call get_open_orders and get_closed_orde
 
 ```python
 import requests
-url = "https://api.cbex.io/v1/refData"
+url = "https://api.cybex.io/v1/refData"
 requests.get(url)
 ```
 
 ```shell
-curl "https://api.cbex.io/v1/refData"
+curl "https://api.cybex.io/v1/refData"
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/refData').then(res => res.json())
+fetch('https://api.cybex.io/v1/refData').then(res => res.json())
 ```
 
 > The above command returns JSON structured like this:
@@ -158,24 +159,24 @@ It will return market information regarding exchange, e.g. chain id, reference b
 
 ### HTTP Request
 
-`GET  https://api.cbex.io/v1/refData`
+`GET  https://api.cybex.io/v1/refData`
 
 ## Execute transaction 
 
 ```python
 import requests
-url = "https://api.cbex.io/v1/transaction"
+url = "https://api.cybex.io/v1/transaction"
 data = {"transactionType": "NewLimitOrder", "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": { "assetId": "1.3.0", "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000},  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}
 requests.post(url, json=data, headers={'Content-type': 'application/json'})
 ```
 
 ```shell
-curl --data '{ "transactionType": "NewLimitOrder",  "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": {    "assetId": "1.3.0",    "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000  },  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}' https://api.cbex.io/v1/transaction
+curl --data '{ "transactionType": "NewLimitOrder",  "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": {    "assetId": "1.3.0",    "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000  },  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}' https://api.cybex.io/v1/transaction
 ```
 
 ```javascript
 const data = {"transactionType": "NewLimitOrder", "transactionId": "040c6466dc0cebb8de40520ebb7346fe0e446b35",  "refBlockNum": 18956,  "refBlockPreix": 507092400,  "txExpiration": 1546926850,  "fee": { "assetId": "1.3.0", "amount": 55  },  "seller": "1.2.40658",  "amountToSell": {"assetId": "1.3.27","amount": 277000},  "minToReceive": {    "assetId": "1.3.4",    "amount": 100000  },  "expiration": 1546991999,  "signature": "1b477931ebb89b39f7e1f1953c9ead66f1c93eee8183f4334729e8f19dceab2a5000af53728952dd73bc3636ab0663cc8f0293714d4c4ed8f3399c5a50b9da2816", "fill_or_kill": 0}
-fetch('https://api.cbex.io/v1/transaction', {
+fetch('https://api.cybex.io/v1/transaction', {
   method: 'POST', // or 'PUT'
   body: JSON.stringify(data), // data can be `string` or {object}!
   headers:{
@@ -206,11 +207,12 @@ fetch('https://api.cbex.io/v1/transaction', {
   }
 ```
 
-User needs to put the return content from cyb-signer in the content of this post message.
+This API endpoint is for order execution. POST request with the formatted order message with valid signature(s). 
+If order execution failed, please refer to the list of [execution errors](#order-execution-error-code) for details.
 
 ### HTTP Request
 
-`POST https://api.cbex.io/v1/transaction`
+`POST https://api.cybex.io/v1/transaction`
 
 ### URL Parameters
 POST with the json content,ie, the formatted order message with valid signature, from cyb-signer as the content body of this post request.
@@ -219,16 +221,16 @@ POST with the json content,ie, the formatted order message with valid signature,
 
 ```python
 import requests
-url = "https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED"
+url = "https://api.cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED'
+curl 'https://api.cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED'
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED').then(res => res.json())
+fetch('https://api.cybex.io/v1/order?accountName=XXXX&reverse=true&orderStatus=FILLED,CANCELED').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -270,13 +272,13 @@ This API endpoint is used to query order statuses.
 
 ### HTTP Request
 
-`GET https://api.cbex.io/v1/order`
+`GET https://api.cybex.io/v1/order`
 
 ### URL Parameters
     
 Parameter | Type | Mandatory | Example | Description
 --------- | --------- | ----------- | ----------- |  ----------- 
-accountName | STRING |  YES | 1.2.1321  | Your-account-name
+accountName | STRING |  YES | 1.2.40658  | Your-account-name
 reverse | BOOL |  NO |  | If it is true, the most recent record will be shown at the beginning
 assetPair | STRING |  NO | ETH/USDT | Asset pair filter
 orderStatus | STRING |  NO | FILLED | Use comma as delimiter to include more than one statuses. E.g. FILLED, OPEN
@@ -290,16 +292,16 @@ transactionId | STRING | NO | 410sdl8ila | Query by transaction id
 
 ```python
 import requests
-url = "https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true"
+url = "https://api.cybex.io/v1/trade?accountName=XXXXXX&reverse=true"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true'
+curl 'https://api.cybex.io/v1/trade?accountName=XXXXXX&reverse=true'
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/trade?accountName=XXXXXX&reverse=true').then(res => res.json())
+fetch('https://api.cybex.io/v1/trade?accountName=XXXXXX&reverse=true').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -337,14 +339,14 @@ Please note that this endpoint don't support ID query.
 
 ### HTTP Request
 
-`GET https://api.cbex.io/v1/trade`
+`GET https://api.cybex.io/v1/trade`
 
 ### URL Parameters
     
     Parameter | Type | Mandatory | Example | Description
     --------- | --------- | ----------- | ----------- |  ----------- 
-    accountName | STRING |  No | 1.2.1321  | Your-account-name
-    reverse | BOOL |  NO |  | If it is true, the most recent record will be shown at the beginning
+    accountName | STRING |  NO | 1.2.40658  | Your-account-name
+    reverse | BOOL |  NO | 1 | If it is true, the most recent record will be shown at the beginning
     assetPair | STRING |  NO | ETH/USDT | Asset pair filter
     startTime | STRING |  NO | 2018-01-07T01:20:48.647910Z | Beginning time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ
     endTime | STRING |  NO | 2019-01-07T01:20:48.647910Z | End time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ.
@@ -355,16 +357,16 @@ Please note that this endpoint don't support ID query.
 
 ```python
 import requests
-url = "https://api.cbex.io/v1/position?accountName=1.2.40658"
+url = "https://api.cybex.io/v1/position?accountName=1.2.40658"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.cbex.io/v1/position?accountName=1.2.40658'
+curl 'https://api.cybex.io/v1/position?accountName=1.2.40658'
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/position?accountName=1.2.40658').then(res => res.json())
+fetch('https://api.cybex.io/v1/position?accountName=1.2.40658').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -392,27 +394,27 @@ This API endpoint is used to query account current position.
 
 ### HTTP Request
 
-`GET https://api.cbex.io/v1/position`
+`GET https://api.cybex.io/v1/position`
 
 ### URL Parameters
     
 Parameter | Type | Mandatory | Example | Description
 --------- | --------- | ----------- | ----------- |  ----------- 
-accountName | STRING |  YES | 1.2.1321  | Your-account-name
+accountName | STRING |  YES | 1.2.40658  | Your-account-name
 
 ## Query order book
 
 ```python
-url = "https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3"
+url = "https://api.cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3'
+curl 'https://api.cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3'
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/orderBook?assetPair=ETH/USDT&limit=3').then(res => res.json())
+fetch('https://api.cybex.io/v1/orderBook?assetPair=ETH/USDT&limit=3').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -463,29 +465,29 @@ This API endpoint is used to query order book of given asset pair.
 
 ### HTTP Request
 
-`GET https://api.cbex.io/v1/orderBook`
+`GET https://api.cybex.io/v1/orderBook`
 
 ### URL Parameters
     
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
-assetPair | STRING |  YES | ETH/USDT  | target asset pair
+assetPair | STRING |  YES | ETH/USDT  | Target asset pair
 limit | INT | YES | 10 | Number of levels
     
 
 ## Query kline data
 
 ```python
-url = "https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
+url = "https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2"
 requests.get(url)
 ```
 
 ```shell
-curl 'https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
+curl 'https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2'
 ```
 
 ```javascript
-fetch('https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').then(res => res.json())
+fetch('https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').then(res => res.json())
 ```
 
 > The above command returns JSON if success:
@@ -525,7 +527,7 @@ fetch('https://api.cbex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').th
 
 ### HTTP Request
 
-`GET https://api.cbex.io/v1/klines`
+`GET https://api.cybex.io/v1/klines`
 
 ### URL Parameters
 
@@ -672,10 +674,10 @@ All fields are required.
 
 Parameter | Type|  Example | Description
 --------- | ----| ------- | -----------
-assetPair | STRING | ETH/USDT | the targeted asset pair of trading intention 
-price | FLOAT | 162.1 | order price in float number
-quantity | FLOAT |0.1 | the amount of trading in float number
-side | STRING | buy/sell | buy side or sell side
+assetPair | STRING | ETH/USDT | Targeted asset pair of trading intention 
+price | FLOAT | 162.1 | Price of trading
+quantity | FLOAT |0.1 | Amount of trading
+side | STRING | buy/sell | Buy side or sell side
 
 ## Create Cancel Order
 
@@ -876,7 +878,7 @@ This subscription topic retrieves orderbook of a given asset pair, with paramete
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
-assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | Target asset pair
 Precision | INT | YES | 5 | Aggregated precision
 Level | INT | YES | 3 | Number of levels
 
@@ -901,7 +903,7 @@ This subscription topic retrieves ticker information of a given asset pair.
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
-assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | Target asset pair
 
 ## Lastprice
 This subscription topic retrieves price change information of a given asset pair. 
@@ -920,4 +922,4 @@ This subscription topic retrieves price change information of a given asset pair
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
-assetPair | STRING |  YES | JADE_ETHJADE_USDT  | target asset pair
+assetPair | STRING |  YES | JADE_ETHJADE_USDT  | Target asset pair
