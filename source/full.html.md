@@ -86,23 +86,10 @@ Cybex JavaScript library is under development and will be released soon.
 
 CCXT is a popular crypto trading library. Cybex CCXT integration is under development. For other languages bindings and further improvement, we welcome the generous support from the community.
 
-# ROME API Endpoints
+# ROME API 
 
-### Order identifier and status
-
-Before get started, please note that the order identifiers and statuses used in the system. 
-
-Notation | Details 
-----|---------
-Transaction ID| The hash of order message, unique and immutable, similar to MAC(Message Authentication Code). This is the primary identifier of an order in ROME. 
-Order sequence| Sequence notation of an order.
-Chain order ID| The id assigned by chain, subject to mutations by a distributed system.
-
-<aside class="notice">
-In Cybex system, one transcation is consisted of exactly one operation, which is differnet from <i>BitShares</i>. Every operation, such as <u>limit order create</u> or <u>transfer</u> is trackable by a unique transcation ID. 
-</aside>
-
-As a decentralized system, there are more order statuses other than OPEN, FILLED and CANCELED. The fill list of order status notation of the Cybex system is as below.
+Before get started, please note the list of order status notation of the Cybex system, which is essential in order query/filter.
+As a decentralized system, there are more order statuses other than OPEN, FILLED and CANCELED.
 
 ID |Status | Type* | Details 
 ----|---------|---- | ------- 
@@ -113,7 +100,7 @@ ID |Status | Type* | Details
 5|FILLED | closed |Order fully filled. Filled order cannot be canceled.
 6|REJECTED| closed |Order rejected by ROME if not valid. Order rejected by ROME will not go to chain.
 
-*Order type is the category for function call get_open_orders and get_closed_orders. 
+Order type is the category for function call get_open_orders and get_closed_orders. 
 
 ## Query market info
 
@@ -812,8 +799,8 @@ Parameter | Type |Example | Description
 assetPair | STRING |ETH/USDT | Use “CYB/CYB” to cancel all your open orders no matter what asset pairs they are in
 
 
-# Cybex Market Data Publisher
-To improve market data efficiency, Cybex provides a fast websockets connection to subscribe market data, **Market Data Publisher**, so that users can 
+# Cybex Web Socket Streams 
+To improve market data efficiency, Cybex provides a websockets connection to subscribe market data, so that users can 
 reduce latency and get streamed update.  
 
 * The base endpoint is: **wss://mdp.cybex.io**
@@ -825,7 +812,7 @@ reduce latency and get streamed update.
 You may refer to the basic examples below in python and javascript(nodejs) for quick start. 
 
 ```python
-# you will need websocket client dependency 
+# you will need  websocket client dependency 
 # pip install websocket_client
 from websocket import WebSocketApp
 
@@ -936,49 +923,3 @@ This subscription topic retrieves price change information of a given asset pair
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
 assetPair | STRING |  YES | JADE_ETHJADE_USDT  | Target asset pair
-
-
-## Position
-
-This subscription topic subscribe to change in a given account, realtime update on event. 
-
-> {"type":"subscribe","topic":"POSITIONS.40658"}
-
-```
-{  
-   "accountName":"rte-test",
-   "positions":[  
-      {  
-         "assetName":"ETH",
-         "available":0.208008,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"EOS",
-         "available":0.202701,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"CYB",
-         "available":3292.12381,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"USDT",
-         "available":25.382388,
-         "frozen":0.0
-      }
-   ],
-   "time":"2019-04-23T04:25:59.222225Z",
-   "ts":"2019-04-23T06:04:13.423015Z",
-   "topic":"POSITIONS.40658"
-}
-```
-
-**Topic Name:** POSITIONS{account}
-
-Parameter | Type | Mandatory | Example | Description |
---------- | --------- | ----------- | ----------- |  ------ 
-account | STRING |  YES | 40658  | account id without prefix of 1.2
-
-
