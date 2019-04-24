@@ -228,7 +228,62 @@ If order execution failed, please refer to the list of [execution errors](#order
 `POST https://api.cybex.io/v1/transaction`
 
 ### URL Parameters
-POST with the json content,ie, the formatted order message with valid signature, from cyb-signer as the content body of this post request.
+
+The params of this API endpoint is rather complex. Cyb-signer, or Cybex libraries can do the work of generating valid order message and signature. 
+
+**Create Limit Order**
+
+Please refer to the [Cyb-signer endpoint](#create-new-order) for example.
+
+Parameter | Type | Mandatory | Example | Description
+--------- | --------- | ----------- | ----------- |  ----------- 
+transactionType | STRING |  YES | NewLimitOrder  | Fix string
+transactionId | STRING |  YES | *TXID* | Hash the transaction message
+refBlockNum | STRING |  YES | 969 | Block param derived from ref_block_id in refData
+refBlockPrefix | STRING |  YES | 3017482673 | Block param derived from ref_block_id in refData
+txExpiration | STRING |  YES | 1556090107  | Transaction expiration UTC Timestamp
+fee | OBJECT |  YES | {"assetId":"1.3.0","amount":0} | Minimum requirement of *cancel* operation
+seller | STRING | YES | 1.2. | User account id
+amountToSell|OBJECT|YES | amountToSell: { assetId: '1.3.2', amount: 10000 }| The object of asset id and amount to sell
+minToReceive|OBJECT|YES | minToReceive: { assetId: '1.3.27', amount: 10000 }| The object of asset id and amount to receive
+expiration|INT|YES |1556121600| Order expiration time in UTC Timestamp 
+fill_or_kill|BOOL|YES |0| Should the order be instantly killed if no fill.
+isBuy| BOOL|YES |0| Whether the order is a buy order or not.
+signature | STRING | YES | *SIGNATURE* | Signature of the order message with private key
+
+
+**Create Cancel Order**
+
+Please refer to the [Cyb-signer endpoint](#create-cancel-order) for example.
+
+Parameter | Type | Mandatory | Example | Description
+--------- | --------- | ----------- | ----------- |  ----------- 
+transactionType | STRING |  YES | Cancel  | Fix string
+transactionId | STRING |  YES | *TXID* | Hash the transaction message
+originalTransactionId | STRING | YES| *TXID* | The transaction targeted to cancel
+refBlockNum | STRING |  YES | 969 | Block param derived from ref_block_id in refData
+refBlockPrefix | STRING |  YES | 3017482673 | Block param derived from ref_block_id in refData
+txExpiration | STRING |  YES | 1556090107  | UTC Timestamp
+fee | OBJECT |  YES | {"assetId":"1.3.0","amount":0} | Minimum requirement of *cancel* operation
+feePayingAccount | STRING |  YES | 1.2. | User account id
+signature | STRING | YES | *SIGNATURE*  | Signature of the order message with private key
+
+**Create Cancel All**
+
+Please refer to the [Cyb-signer endpoint](#create-cancelall) for example.
+
+Parameter | Type | Mandatory | Example | Description
+--------- | --------- | ----------- | ----------- |  ----------- 
+transactionType | STRING |  YES | CancelAll  | Fix string
+transactionId | STRING |  YES | *TXID* | Hash the transaction message
+refBlockNum | STRING |  YES | 969 | Block param derived from ref_block_id in refData
+refBlockPrefix | STRING |  YES | 3017482673 | Block param derived from ref_block_id in refData
+txExpiration | STRING |  YES | 1556090107  | UTC Timestamp
+fee | OBJECT |  YES | {"assetId":"1.3.0","amount":50} | Minimum requirement of *cancel_all* operation
+seller | STRING |  YES | 1.2. | Number where result will be shown from
+sellAssetId | STRING |  YES | 1.3.2 | Max number of results returned
+recvAssetId | STRING | YES | 1.3.27 | Query by transaction id
+signature | STRING | YES | *SIGNATURE* | Signature of the order message with private key
 
 ## Query order status
 
@@ -940,38 +995,60 @@ assetPair | STRING |  YES | JADE_ETHJADE_USDT  | Target asset pair
 
 ## Position
 
-This subscription topic subscribe to change in a given account, realtime update on event. 
+This subscription topic subscribes to all balance/position changes in a given account, realtime update on event. 
 
 > {"type":"subscribe","topic":"POSITIONS.40658"}
 
 ```
 {  
-   "accountName":"rte-test",
-   "positions":[  
-      {  
-         "assetName":"ETH",
-         "available":0.208008,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"EOS",
-         "available":0.202701,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"CYB",
-         "available":3292.12381,
-         "frozen":0.0
-      },
-      {  
-         "assetName":"USDT",
-         "available":25.382388,
-         "frozen":0.0
-      }
-   ],
-   "time":"2019-04-23T04:25:59.222225Z",
-   "ts":"2019-04-23T06:04:13.423015Z",
-   "topic":"POSITIONS.40658"
+   "ts":"2019-04-24T06:54:55.354788Z",
+   "topic":"POSITIONS.40658",
+   "result":{  
+      "accountName":"rte-test",
+      "positions":[  
+         {  
+            "assetName":"ARENA.ETH",
+            "available":0.077,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"ARENA.EOS",
+            "available":20.1,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"ETH",
+            "available":0.208008,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"EOS",
+            "available":0.202701,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"ARENA.USDT",
+            "available":6.73955,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"ARENA.BTC",
+            "available":0.01,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"CYB",
+            "available":3292.12381,
+            "frozen":0.0
+         },
+         {  
+            "assetName":"USDT",
+            "available":25.382388,
+            "frozen":0.0
+         }
+      ],
+      "time":"2019-04-24T00:01:30.941565Z"
+   }
 }
 ```
 
@@ -982,3 +1059,31 @@ Parameter | Type | Mandatory | Example | Description |
 account | STRING |  YES | 40658  | account id without prefix of 1.2
 
 
+## Order status
+
+This subscription topic subscribes to any order status update in a given account, realtime update on event. 
+
+> {"type":"subscribe","topic":"ORDERSTATUS.46412"}
+
+```
+{  
+   "ts":"2019-04-24T06:51:43.678630Z",
+   "topic":"ORDERSTATUS.46412",
+   "result":{  
+      "orderSequence":452457,
+      "orderStatus":"PENDING_CXL",
+      "assetPair":"JADE.BTC/JADE.USDT",
+      "side":"buy",
+      "price":5510.79,
+      "quantity":1.10752142,
+      "filledQty":0.0,
+      "lastUpdateTime":"2019-04-24T06:51:43.678636Z"
+   }
+}
+```
+
+**Topic Name:** ORDERSTATUS{account}
+
+Parameter | Type | Mandatory | Example | Description |
+--------- | --------- | ----------- | ----------- |  ------ 
+account | STRING |  YES | 40658  | account id without prefix of 1.2

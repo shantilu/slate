@@ -400,6 +400,8 @@ html, body {
     padding-top: 1.2em;
     padding-bottom: 1.2em;
     background-image: linear-gradient(to bottom, rgba(#fff, 0.2), rgba(#fff, 0));
+    border-left: 8px solid $nav-active-bg;
+    padding-left: 20px;
   }
 
   // h2s right after h1s should bump right up
@@ -415,6 +417,8 @@ html, body {
 
   h3{
     border-top: 1px solid #ffc89d;
+    margin-left: 28px;
+    padding-left: 0;
   }
 
   h3, h4, h5, h6 {
