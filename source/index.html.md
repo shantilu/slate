@@ -70,7 +70,7 @@ Once you have the library installed, you can access ROME API endpoints pretty ea
  cybex.fetch_balance()
  # create a market buy order
  order_transaction_id, result = cybex.create_market_buy_order("ETH/USDT", 0.1)
- # query with transcation id
+ # query with transaction id
  orders = cybex.fetch_order(order_transaction_id)
  # cancel order
  cancel_order = cybex.cancel_order(order_transaction_id)
@@ -99,12 +99,12 @@ Order sequence| Sequence notation of an order.
 Chain order ID| The id assigned by chain, subject to mutations by a distributed system.
 
 <aside class="notice">
-In Cybex system, one transcation is consisted of exactly one operation, which is differnet from <i>BitShares</i>. Every operation, such as <u>limit order create</u> or <u>transfer</u> is trackable by a unique transcation ID. 
+In Cybex system, one transaction is consisted of <b>exactly</b> one operation, which is differnet from <i>BitShares</i> that one transaction may contain multiple operations. Thus, every operation is trackable by a single unique <b>transaction ID</b>. 
 </aside>
 
 As a decentralized system, there are more order statuses other than OPEN, FILLED and CANCELED. The fill list of order status notation of the Cybex system is as below.
 
-ID |Status | Type* | Details 
+ID |Status | Category* | Details 
 ----|---------|---- | ------- 
 1|PENDING_NEW| open |New valid order, confirmed by ROME but not yet confirmed on chain.  
 2|OPEN| open | Open order, confirmed on chain. Status may change to either CANCELED or FILLED.   
@@ -648,12 +648,9 @@ API_SERVER_ADDRESS=api.cybex.io
 
 All parameters present in the file __env.properties__ under “cyb-signer/scripts” folder.
 
-<aside class="warning">
-ACCOUNT ID is not the same as ACCOUNT NAME and its format is 1.2.XXXXX.
-</aside>
-
-<aside class="warning"> 
-Private key is not your login password in Cybex website
+<aside class="notice"><b>ACCOUNT_ID & PRIVATE_KEY</b>
+<p>ACCOUNT ID is not the same as ACCOUNT NAME and its format is 1.2.XXXXX. Private key is not your login password. You may find it at dex.cybex.io, click settings and select private key.</p>
+<p><img src="images/pkey.png" width="60%" /></p>
 </aside>
 
 ## Launch
@@ -693,7 +690,7 @@ curl "http://127.0.0.1:8090/signer/v1/newOrder"
 ```
 
 ```javascript
-var data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
+const data = {'assetPair': symbol, 'price': price, 'quantity': quantity, 'side': side}
 fetch("http://localhost:8090/signer/v1/newOrder", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: { "Content-Type": "application/json" },
@@ -763,7 +760,7 @@ curl --data '{"originalTransactionId": "88cecaa11b8584fb21243cd57ed2227e7c181452
 ```
 
 ```javascript
-var data = {'originalTransactionId': trxid};
+const data = {'originalTransactionId': trxid};
 fetch("http://127.0.0.1:8090/signer/v1/cancelOrder", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: { "Content-Type": "application/json" },
@@ -822,7 +819,7 @@ curl --data '{"assetPair": "ETH/USDT"}' http://localhost:8090/signer/v1/cancelAl
 ```
 
 ```javascript
-var data = {'assetPair': symbol};
+const data = {'assetPair': symbol};
 fetch("http://127.0.0.1:8090/signer/v1/cancelAll", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     headers: { "Content-Type": "application/json" },
@@ -868,16 +865,13 @@ assetPair | STRING |ETH/USDT | Use “CYB/CYB” to cancel all your open orders 
 
 
 # Cybex Market Data Publisher
-To improve market data efficiency, Cybex provides a fast websockets connection to subscribe market data, **Market Data Publisher**, so that users can 
+To improve market data efficiency, Cybex provides a fast websockets connection to subscribe market data, **Market Data Publisher**(MDP), so that users can 
 reduce latency and get streamed update.  
 
 * The base endpoint is: **wss://mdp.cybex.io**
 * Websocket connections are **subscription based**
 * All topic and symbols are **uppercase**
-* Steams send out update on every **500ms**
 * Prefix like JADE cannot be omitted and must be joint with an underscore.
-
-You may refer to the basic examples below in python and javascript(nodejs) for quick start. 
 
 ```python
 # you will need websocket client dependency 
@@ -912,6 +906,16 @@ wsClient.on('connect', function (connection) {
 
 wsClient.connect('wss://mdp.cybex.io');
 ```
+
+Here is an overview of all the currently provided subscription topics of MDP.
+
+Type | Topic Notation | Update Frequency 
+--------- | --- |----------- 
+Order book | ORDERBOOK{AssetPair}.{Precision}.{Level} | 0.5s 
+Ticker | TICKER{AssetPair} | 0.5s 
+Last price | LASTPRICE{AssetPair} | 0.5s 
+Position | POSITIONS{account} | on event 
+Order status | ORDERSTATUS{account} | on event 
 
 
 ## Orderbook
@@ -967,7 +971,7 @@ This subscription topic retrieves ticker information of a given asset pair.
 }
 ````
 
-**Topic Name:** LASTPRICE{AssetPair}
+**Topic Name:** TICKER{AssetPair}
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
@@ -986,7 +990,7 @@ This subscription topic retrieves price change information of a given asset pair
 }
 ```
 
-**Topic Name:** TICKER{AssetPair}
+**Topic Name:** LASTPRICE{AssetPair}
 
 Parameter | Type | Mandatory | Example | Description |
 --------- | --------- | ----------- | ----------- |  ------ 
