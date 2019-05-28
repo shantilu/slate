@@ -57,6 +57,8 @@ Once you have the library installed, you can access ROME API endpoints pretty ea
 
 ### Usage
 
+`from romeapi import Cybex`
+
 ```python
  from romeapi import Cybex
  # init with accountName and password
@@ -80,13 +82,63 @@ For source code and more usage details, please visit the official [github](https
 
 ## Cybex JavaScript Library
 
-Cybex JavaScript library is under development and will be released soon.
+### Installation
+
+`npm i romejs`
+
+### Usage
+
+Import
+ 
+`const Cybex = require("cybex");`
+
+Initiate
+
+`const cybex = new Cybex();`
+
+Place limit order
+
+`const res= await cybex.createLimitBuyOrder(assetPair, 0.01, 200);`
+
+````javascript
+(async () => {
+    const cybex = new Cybex();
+    const assetPair = "ETH/USDT";
+    
+    const orderbook = await cybex.fetchOrderBook(assetPair, 1);
+    console.log(orderbook);
+    
+    const balance = await cybex.fetchBalance("shanti001");
+    console.log(balance);
+    
+    const r = await cybex.setSigner({accountName:"accountName", "password":"password"});
+    // or you may use account id and private key to set the credentials
+    // const r = await cybex.setSigner({account:"1.2.xxxxx", "key":"private_key"});
+    
+    // to place a limit order
+    const res = await cybex.createMarketBuyOrder(assetPair, 0.01, 200);
+    console.log(res);
+    // to cancel this order
+    const _cancel = await cybex.cancelOrder(res.transactionId);
+    console.log(_cancel);
+    
+})();
+
+````
 
 ## Cybex CCXT integration and other language bindings
 
 CCXT is a popular crypto trading library. Cybex CCXT integration is under development. For other languages bindings and further improvement, we welcome the generous support from the community.
 
 # ROME API Endpoints
+
+### Base url
+
+ROME API base url is 
+`https://api.cybex.io/v1/refData`
+
+ROME API test environment base url is 
+`https://apitest.cybex.io/v1/refData`
 
 ### Order identifier and status
 
@@ -401,7 +453,7 @@ fetch('https://api.cybex.io/v1/trade?accountName=XXXXXX&reverse=true').then(res 
 
 ```
 
-This API endpoint is used to query trades. Trades are filled orders. accountName and assetPair cannot both be null. 
+This API endpoint is used to query trades of a given account. Public trades data query can be done at publicTrade endpoint.
 
 Please note that this endpoint don't support ID query.
 
@@ -413,7 +465,7 @@ Please note that this endpoint don't support ID query.
     
     Parameter | Type | Mandatory | Example | Description
     --------- | --------- | ----------- | ----------- |  ----------- 
-    accountName | STRING |  NO | 1.2.40658  | Your-account-name
+    accountName | STRING |  YES | 1.2.40658  | Your-account-name
     reverse | BOOL |  NO | 1 | If it is true, the most recent record will be shown at the beginning
     assetPair | STRING |  NO | ETH/USDT | Asset pair filter
     startTime | STRING |  NO | 2018-01-07T01:20:48.647910Z | Beginning time of your query, format must be YYYY-MM-DDTHH:mm:ss.ssssssZ
@@ -593,6 +645,8 @@ fetch('https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').t
 ]
 ```
 
+This API endpoint is used to query order book of given asset pair.
+
 ### HTTP Request
 
 `GET https://api.cybex.io/v1/klines`
@@ -600,15 +654,63 @@ fetch('https://api.cybex.io/v1/klines?assetPair=EOS/USDT&interval=1m&limit=2').t
 ### URL Parameters
 
 
-|Parameter|Type|Mandatory|Example value|
-| --- | --- | --- | --- |
-| assetPair | STRING | YES | E.g. ETH/USDT, EOS/USDT |
+Parameter|Type|Mandatory|Example value|
+ --- | --- | --- | --- |
+assetPair | STRING | YES | E.g. ETH/USDT, EOS/USDT |
 interval | ENUM | YES | 1m, 3m, , 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
 startTime | LONG | NO | Beginning time of the query, the format must be YYYY-MM-DDTHH:mm:ss.ssssssZ. E.g. 2018-01-07T01:20:48.647910Z
 endTime | LONG | NO | End time of the query, the format must be YYYY-MM-DDTHH:mm:ss.ssssssZ. E.g. 2019-01-07T01:20:48.647910Z
 limit | INT | NO | Level to be shown
 useTradePrice | BOOL | NO | Default is "false", and this api returns market prices. If it is specified as "true" then this api returns our exchange's prices.  
 
+
+## Query market recent trades
+
+```python
+url = "https://api.cybex.io/v1/recentTrade?assetPair=ETH/USDT"
+requests.get(url)
+```
+
+```shell
+curl 'https://api.cybex.io/v1/recentTrade?assetPair=ETH/USDT'
+```
+
+```javascript
+fetch('https://api.cybex.io/v1/recentTrade?assetPair=ETH/USDT').then(res => res.json())
+```
+
+> The above command returns JSON if success:
+
+```json
+[
+  {
+  "accountName": "aarika19820221",
+  "orderSequence": 119564,
+  "chainOrderId": 675919500,
+  "assetPair": "ETH/USDT",
+  "side": "buy",
+  "orderPrice": 271.33,
+  "orderQuantity": 0.007755,
+  "tradePrice": 271.33,
+  "tradeQuantity": 0.007755,
+  "blockTime": "2019-05-28T01:34:12.000000Z"
+  },
+  ...
+]
+```
+
+This API endpoint is used to query kline or OCHLV data of given asset pair.
+
+### HTTP Request
+
+`GET https://api.cybex.io/v1/recentTrade`
+
+### URL Parameters
+
+
+|Parameter|Type|Mandatory|Example value|
+| --- | --- | --- | --- |
+| assetPair | STRING | YES | E.g. ETH/USDT, EOS/USDT |
    
 # Cyb-signer Installation
 
